@@ -5,16 +5,16 @@
         <img src="../assets/1.jpg" alt />
       </div>
       <div class="form_box">
-        <el-form label-width="0">
+        <el-form :model="loginForm" label-width="0" :rules="rules">
           <!-- 账户名 -->
           <label for>用户名</label>
-          <el-form-item>
-            <el-input prefix-icon="iconfont icon-bussiness-man"></el-input>
+          <el-form-item prop="username">
+            <el-input prefix-icon="iconfont icon-bussiness-man" v-model="loginForm.username"></el-input>
           </el-form-item>
           <!-- 密码 -->
           <label for>密码</label>
           <el-form-item>
-            <el-input prefix-icon="iconfont icon-lock"></el-input>
+            <el-input prefix-icon="iconfont icon-lock" type="password" v-model="loginForm.password"></el-input>
           </el-form-item>
           <el-form-item class="btns">
             <el-button type="primary">登录</el-button>
@@ -26,7 +26,28 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  el: "login",
+  data() {
+    return {
+      loginForm: {
+        username: "",
+        password: ""
+      },
+      rules: {
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          {
+            min: 3,
+            max: 10,
+            message: "长度在 3 到 10 个字符",
+            trigger: "blur"
+          }
+        ]
+      }
+    };
+  }
+};
 </script>
 <style lang='less' scoped>
 #login_container {

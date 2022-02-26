@@ -13,10 +13,12 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'semi': 0,
-    'quotes' : 'off',
+    'semi': 0,//不检查末尾分号
+    'quotes' : 'off',//不检查双引号
     'semi' : 'off',
-    'comma-dangle' : 'off',
-    'no-unused-vars' : 'off'
+    'comma-dangle' : 'off',//不检查逗号
+    'no-unused-vars' : 'off',
+    'space-before-function-paren' : 0
+
   }
 }

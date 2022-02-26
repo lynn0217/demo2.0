@@ -3,6 +3,7 @@ import App from './App.vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
+import './assets/fonticon/iconfont.css'
 import '@/styles/init.css'
 Vue.config.productionTip = false
 Vue.use(ElementUI)

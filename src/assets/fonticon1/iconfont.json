@@ -1,0 +1,44 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "6150969",
+      "name": "key",
+      "font_class": "key",
+      "unicode": "e775",
+      "unicode_decimal": 59253
+    },
+    {
+      "icon_id": "6151134",
+      "name": "file-fill",
+      "font_class": "file-fill",
+      "unicode": "e7c7",
+      "unicode_decimal": 59335
+    },
+    {
+      "icon_id": "6151149",
+      "name": "user-group-fill",
+      "font_class": "user-group-fill",
+      "unicode": "e7d3",
+      "unicode_decimal": 59347
+    },
+    {
+      "icon_id": "6173016",
+      "name": "shopping-cart-fill",
+      "font_class": "shopping-cart-fill",
+      "unicode": "e865",
+      "unicode_decimal": 59493
+    },
+    {
+      "icon_id": "9340469",
+      "name": "monitoring",
+      "font_class": "monitoring",
+      "unicode": "e88e",
+      "unicode_decimal": 59534
+    }
+  ]
+}

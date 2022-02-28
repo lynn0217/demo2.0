@@ -76,7 +76,7 @@ export default {
           // console.log(res);
           this.$message.success('登录成功')
         }
-        console.log(res)
+        // console.log(res)
         // 将token令牌保存进sessionStroage
         window.sessionStorage.setItem('token', res.data.token)
         // 通过编程式导航将页面跳转到 /home

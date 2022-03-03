@@ -256,6 +256,7 @@ export default {
     editDialogClosed() {
       this.$refs.editFormRef.resetFields()
     },
+    // 修改用户信息
     editUserInfo() {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return
@@ -274,7 +275,7 @@ export default {
         this.editDialogVisible = false
         // 刷新数据列表
         this.getUserList()
-        // 提示修改工程
+        // 提示修改信息
         this.$message.success('更新用户信息成功')
       })
     }

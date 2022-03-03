@@ -37,7 +37,12 @@
               size="mini"
               @click="showEditDialog(scope.row.id)"
             ></el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteUser"></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="deleteUser(scope.row.id)"
+            ></el-button>
             <el-tooltip
               class="item"
               effect="dark"
@@ -231,8 +236,13 @@ export default {
         this.getUserList()
       })
     },
-    deleteUser() {
-      this.$http.delete()
+    async deleteUser(id) {
+      const { data: res } = await this.$http.delete('users/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除用户失败')
+      }
+      this.$message.success('删除用户成功')
+      this.getUserList()
     },
     async showEditDialog(id) {
       const { data: res } = await this.$http.get('users/' + id)

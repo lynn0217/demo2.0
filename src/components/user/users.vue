@@ -50,7 +50,12 @@
               placement="top"
               :enterable="false"
             >
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-setting"
+                size="mini"
+                @click="setRolesVisible(scope.row)"
+              ></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -105,6 +110,28 @@
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色弹出框区域 -->
+    <el-dialog title="角色分配" :visible.sync="userVisible" width="50%" @close="setRoleDialog">
+      <div>
+        <p style="margin-bottom:10px">当前的用户:{{userInfo.username}}</p>
+        <p style="margin-bottom:10px">当前的角色:{{userInfo.role_name}}</p>
+        <p>
+          分配新角色:
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="userVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -130,6 +157,8 @@ export default {
       cb(new Error('请输入合法手机号'))
     }
     return {
+      // 已选中角色ID值
+      selectedRoleId: '',
       addForm: {
         username: '',
         password: '',
@@ -168,10 +197,16 @@ export default {
       queryInfo: {
         query: '',
         pagenum: 1,
-        pagesize: 2
+        pagesize: 5
       },
+      // 需要被分配角色用户信息
+      userInfo: {},
       userlist: [],
       total: 0,
+      // 所有角色列表
+      roleList: [],
+      // 弹出框
+      userVisible: false,
       addDialogVisible: false,
       // 修改用户对话框的显示与隐藏
       editDialogVisible: false
@@ -278,6 +313,42 @@ export default {
         // 提示修改信息
         this.$message.success('更新用户信息成功')
       })
+    },
+    //
+    async setRolesVisible(userInfo) {
+      this.userInfo = userInfo
+
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error('获取角色列表失败,请重试')
+      }
+      this.roleList = res.data
+      // console.log(res)
+      this.userVisible = true
+    },
+    // 保存分配好的角色
+    async saveRoleInfo() {
+      if (!this.selectedRoleId) {
+        return this.$message.error('请选择角色')
+      }
+      const { data: res } = await this.$http.put(
+        `users/${this.userInfo.id}/role`,
+        {
+          rid: this.selectedRoleId
+        }
+      )
+      if (res.meta.status !== 200) {
+        return this.$message.error('修改失败')
+      }
+      this.$message.success('更新角色成功')
+      // console.log(res)
+      this.getUserList()
+      this.userVisible = false
+    },
+    // 监听用户角色对话框关闭事件
+    setRoleDialog() {
+      this.selectedRoleId = ''
+      this.userInfo = {}
     }
   }
 }

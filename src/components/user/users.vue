@@ -314,10 +314,9 @@ export default {
         this.$message.success('更新用户信息成功')
       })
     },
-    //
+    // 点击弹出对话框，分配角色
     async setRolesVisible(userInfo) {
       this.userInfo = userInfo
-
       const { data: res } = await this.$http.get('roles')
       if (res.meta.status !== 200) {
         return this.$message.error('获取角色列表失败,请重试')

@@ -18,7 +18,7 @@ module.exports = {
     'semi' : 'off',
     'comma-dangle' : 'off',//不检查逗号
     'no-unused-vars' : 'off',
-    'space-before-function-paren' : 0
-
+    'space-before-function-paren' : 0,
+    'camelcase': 'off'
   }
 }

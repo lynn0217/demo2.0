@@ -40,9 +40,19 @@
           <el-tag type="warning" v-else>三级</el-tag>
         </template>
         <!-- 操作 -->
-        <template slot="opt">
-          <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
+        <template slot="opt" slot-scope="scope">
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+            @click="editCateList(scope.row.cat_id)"
+          >编辑</el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            @click="delCateList(scope.row.cat_id)"
+          >删除</el-button>
         </template>
       </tree-table>
       <!-- 分页区域 -->
@@ -57,7 +67,7 @@
       ></el-pagination>
     </el-card>
     <!-- 添加分类的对话框 -->
-    <el-dialog title="添加分类" :visible.sync="addCateDialogVisible">
+    <el-dialog title="添加分类" :visible.sync="addCateDialogVisible" @close="addCateDialogClose">
       <el-form
         :model="addCateForm"
         :rules="addCateFormRules"
@@ -86,6 +96,18 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addCateDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="addCate">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 编辑分类对话框 -->
+    <el-dialog title="提示" :visible.sync="editCateDialogVisible" width="50%">
+      <el-form :model="editCateForm" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="分类名称" prop="cat_name">
+          <el-input v-model="editCateForm.cat_name"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editCateDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitEditCateList()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -159,7 +181,11 @@ export default {
         value: 'cat_id'
       },
       // 存放级联选择器中已经选中的数据(数组)
-      selectedKeys: []
+      selectedKeys: [],
+      // 编辑分类对话框的隐藏
+      editCateDialogVisible: false,
+      // 编辑分类的表单数据对象
+      editCateForm: {}
     }
   },
   created() {
@@ -205,7 +231,7 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('获取分类数据列表失败')
       }
-      console.log(res.data)
+      // console.log(res.data)
       this.parentCateList = res.data
     },
     handleChange() {
@@ -223,8 +249,61 @@ export default {
         this.selectedKeys.cat_level = 0
       }
     },
+    // 添加新的分类
     addCate() {
-      console.log(this.addCateForm)
+      this.$refs.addCateFormRef.validate(async valid => {
+        if (!valid) return false
+        const { data: res } = await this.$http.post(
+          'categories',
+          this.addCateForm
+        )
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加分类失败')
+        }
+        this.$message.success('添加分类成功')
+        this.getCateList()
+        this.addCateDialogVisible = false
+      })
+    },
+    // 监听关闭事件
+    addCateDialogClose() {
+      // 关闭后将已输入文字清空
+      this.$refs.addCateFormRef.resetFields()
+      // 关闭后将级联选择器清空
+      this.selectedKeys = []
+      this.addCateForm.cat_level = 0
+      this.addCateForm.cat_id = 0
+    },
+    // 删除分类
+    async delCateList(id) {
+      const { data: res } = await this.$http.delete('categories/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除失败')
+      }
+      this.getCateList()
+    },
+    // 编辑分类
+    async editCateList(id) {
+      const { data: res } = await this.$http.get('categories/' + id)
+      if (res.meta.status !== 200) {
+        return this.$message.error('查询分类列表失败')
+      }
+      this.editCateForm = res.data
+      this.editCateDialogVisible = true
+    },
+    // 提交编辑好的分类
+    async submitEditCateList(id) {
+      const { data: res } = await this.$http.put(
+        'categories/' + this.editCateForm.cat_id,
+        {
+          cat_name: this.editCateForm.cat_name
+        }
+      )
+      if (res.meta.status !== 200) {
+        return this.$message.error('提交失败，请重试')
+      }
+      this.getCateList()
+      this.editCateDialogVisible = false
     }
   }
 }

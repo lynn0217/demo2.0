@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Add from '../components/goods/add.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -41,6 +42,13 @@ const routes = [
       {
         path: '/params',
         component: () => import('../components/goods/params.vue')
+      },
+      {
+        path: '/goods',
+        component: () => import('../components/goods/list.vue')
+      },
+      {
+        path: '/goods/add', component: Add
       }
     ]
   }

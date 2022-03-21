@@ -6,6 +6,27 @@
       <el-breadcrumb-item>商品管理</el-breadcrumb-item>
       <el-breadcrumb-item>添加商品</el-breadcrumb-item>
     </el-breadcrumb>
+    <!-- 卡片视图 -->
+    <el-card>
+      <!-- 警告区域 -->
+      <el-alert
+        title="添加商品的信息"
+        type="info"
+        center
+        show-icon
+        :closable="false"
+        style="margin-bottom:25px"
+      ></el-alert>
+      <!-- 进度条 -->
+      <el-steps :space="200" :active="1" finish-status="success" align-center>
+        <el-step title="基本信息"></el-step>
+        <el-step title="商品参数"></el-step>
+        <el-step title="商品属性"></el-step>
+        <el-step title="商品图片"></el-step>
+        <el-step title="商品内容"></el-step>
+        <el-step title="完成"></el-step>
+      </el-steps>
+    </el-card>
   </div>
 </template>
 
@@ -20,4 +41,7 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.el-step__title {
+  font-size: 16px;
+}
 </style>

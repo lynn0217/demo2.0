@@ -7,7 +7,7 @@
       <el-breadcrumb-item>商品列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 卡片视图 -->
-    <el-card class="box-card">
+    <el-card>
       <el-row :gutter="20">
         <el-col :span="6">
           <!-- clear事件，点击X后调用getGoodsList事件 -->

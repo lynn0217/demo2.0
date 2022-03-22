@@ -69,3 +69,6 @@ input, select {
 .el-pagination {
     margin-top: 35px;
 }
+.ql-editor {
+    min-height: 300px;
+}

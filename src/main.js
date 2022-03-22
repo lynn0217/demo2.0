@@ -9,6 +9,12 @@ import '@/styles/init.css'
 import axios from 'axios'
 import TreeTable from 'vue-table-with-tree-grid'
 import { message } from './api/resetMessage'
+// 导入富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+
 // 配置根路径
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 // axios请求拦截
@@ -23,6 +29,8 @@ Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.prototype.$message = message
+// 注册富文本编辑器，全局可用组件
+Vue.use(VueQuillEditor)
 // 全局时间过滤器  list.vue
 Vue.filter('dataFormat', function(originVal) {
   const dt = new Date(originVal)

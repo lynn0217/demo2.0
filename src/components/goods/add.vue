@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- 注意： 富文本编辑器的安装 -->
+    <!-- 编辑器名字：vue-quill-editor -->
+    <!-- 安装lodash 调用cloneDeep(深拷贝)  将goods_cat转换为一个字符串，与级联选择器中的goods_cat区别开 -->
     <!-- 面包屑导航组件 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -41,6 +44,7 @@
           :before-leave="beforeTabLeave"
           @tab-click="tabClick"
         >
+          <!--商品基本信息区域 -->
           <el-tab-pane label="基本信息" name="0">
             <el-form-item label="商品名称" prop="goods_name">
               <el-input v-model="addForm.goods_name"></el-input>
@@ -64,6 +68,7 @@
               ></el-cascader>
             </el-form-item>
           </el-tab-pane>
+          <!-- 商品动态参数区域 -->
           <el-tab-pane label="商品参数" name="1">
             <el-form-item :label="item.attr_name" v-for="item in manyTableData" :key="item.attr_id">
               <el-checkbox-group v-model="item.attr_vals">
@@ -71,11 +76,13 @@
               </el-checkbox-group>
             </el-form-item>
           </el-tab-pane>
+          <!-- 商品静态属性 -->
           <el-tab-pane label="商品属性" name="2">
             <el-form-item :label="item.attr_name" v-for="item in onlyTableData" :key="item.attr_id">
               <el-input v-model="item.attr_vals"></el-input>
             </el-form-item>
           </el-tab-pane>
+          <!-- 商品图片 -->
           <el-tab-pane label="商品图片" name="3">
             <!-- action表示图片需要上传到的后台api地址 -->
             <el-upload
@@ -89,7 +96,12 @@
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
           </el-tab-pane>
-          <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
+          <!-- 商品内容 -->
+          <el-tab-pane label="商品内容" name="4">
+            <quill-editor v-model="addForm.goods_introduce"></quill-editor>
+            <!-- 添加按钮 -->
+            <el-button style="margin-top:25px" type="primary" @click="add">添加商品</el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-card>
@@ -101,6 +113,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
   data() {
     return {
@@ -116,7 +129,10 @@ export default {
         // 商品所属的分类数组
         goods_cat: [],
         // 上传成功的图片临时数组
-        pics: []
+        pics: [],
+        // 商品详情
+        goods_introduce: '',
+        attrs: []
       },
       // 添加商品的表单验证对象
       addFormRules: {
@@ -232,6 +248,42 @@ export default {
       // 2.将图片对象push到pics数组中
       this.addForm.pics.push(picInfo)
       // console.log(this.addForm)
+    },
+    // 最终添加商品
+    add() {
+      this.$refs.addFormRef.validate(async valid => {
+        if (!valid) {
+          return this.$message.error('请填写必要的表单项！')
+        }
+        // 执行添加商品的业务逻辑
+        const form = _.cloneDeep(this.addForm)
+        form.goods_cat = form.goods_cat.join(',')
+        // 处理静态属性
+        this.onlyTableData.forEach(item => {
+          const newInfo = {
+            attr_id: item.attr_id,
+            attr_value: item.attr_vals
+          }
+          this.addForm.attrs.push(newInfo)
+        })
+        // 处理动态参数
+        this.manyTableData.forEach(item => {
+          const newInfo = {
+            attr_id: item.attr_id,
+            attr_value: item.attr_vals.join(' ')
+          }
+          this.addForm.attrs.push(newInfo)
+        })
+        form.attrs = this.addForm.attrs
+        // 发起请求
+        // 商品名字必须是唯一的
+        const { data: res } = await this.$http.post('goods', form)
+        if (res.meta.status !== 201) {
+          return this.$message.error('添加商品失败,请重试！')
+        }
+        this.$message.success('添加商品成功')
+        this.$router.push('/goods')
+      })
     }
   },
   computed: {

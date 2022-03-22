@@ -8,6 +8,7 @@ import './assets/fonticon1/iconfont.css'
 import '@/styles/init.css'
 import axios from 'axios'
 import TreeTable from 'vue-table-with-tree-grid'
+import { message } from './api/resetMessage'
 // 配置根路径
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 // axios请求拦截
@@ -21,6 +22,7 @@ Vue.component('tree-table', TreeTable)
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.prototype.$message = message
 // 全局时间过滤器  list.vue
 Vue.filter('dataFormat', function(originVal) {
   const dt = new Date(originVal)
